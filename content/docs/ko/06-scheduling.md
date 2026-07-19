@@ -1,0 +1,95 @@
+---
+title: 스케줄링
+slug: scheduling
+---
+
+`Scheduler`는 일정이 도래할 때마다 태스크를 enqueue해서 반복 작업을
+실행합니다 — 고정된 간격(interval)으로든, cron 표현식으로든. 평범한
+`time.Ticker`나 cron 라이브러리와 다른 핵심 차별점은, **서비스의 모든
+인스턴스가 스케줄러를 실행해도** 각 트리거가 클러스터 전체에서 정확히 한
+번만 enqueue된다는 것입니다. 이것이 가능한 이유는 항상 하나의 인스턴스만
+Redis 기반 리더 락을 쥐고 있고, 각 트리거가 결정적인 중복 제거 키로
+enqueue되어 리더 교체가 일어나도 작업이 두 번 실행되지 않기 때문입니다.
+
+### 레시피: 인터벌 작업
+
+```go
+sched := chronos.NewScheduler(rdb, chronos.SchedulerConfig{})
+
+// every 30s (interval must be >= 1s)
+chronos.RegisterInterval(sched, 30*time.Second, HealthCheckArgs{})
+
+sched.Start(ctx)          // safe on every instance
+defer sched.Shutdown(ctx)
+```
+
+`RegisterInterval`은 일반적인 옵션(`WithQueue`, `WithMaxRetry` 등)을
+그대로 받습니다. interval은 최소 1초 이상이어야 합니다 — 서브초 단위
+일정은 리더 페일오버를 견딜 수 없는데, 페일오버 자체가 `LeaderTTL` 정도의
+시간이 걸리기 때문입니다.
+
+### 레시피: cron 작업
+
+```go
+// standard 5-field cron
+chronos.RegisterCron(sched, "0 0 * * *", DailyReportArgs{})
+```
+
+`RegisterCron`은 표준 5필드 cron 표현식과 `RegisterInterval`과 동일한
+옵션들을 받습니다. 두 함수 모두 `Start`를 호출하기 전에 등록해야 합니다.
+
+### 리더 선출은 어떻게 동작하나
+
+한 번에 오직 하나의 스케줄러 인스턴스만 실제로 enqueue합니다 — 선출된
+**리더**입니다. 내부적으로 이는 Redis `SET NX PX` 락입니다: 락이 비어
+있으면 획득하고, 이미 자신이 쥐고 있으면 갱신(`PEXPIRE`)하며, TTL은
+`SchedulerConfig.LeaderTTL`(기본 5초)입니다. 모든 인스턴스는 또한
+pub/sub 채널을 구독합니다 — 리더가 종료될 때 `ResignLeadership`을
+호출하면 락을 삭제함과 동시에 사임 알림을 발행해서, 팔로워가 TTL이 다
+지나기를 기다리지 않고 즉시 재선출할 수 있게 합니다. 리더가 사임 없이
+죽으면(크래시, 네트워크 파티션) 락은 그냥 만료되고 다른 인스턴스가
+`LeaderTTL` 이내에 이를 넘겨받습니다.
+
+어느 경우든 각 트리거는 핸드오프 구간보다 오래 살아남는 결정적인 중복
+제거 키(`<schedule>:<trigger-unix>`)로 enqueue됩니다. 그래서 split-brain
+순간 — 이전 리더는 여전히 자신이 리더라고 믿고, 새 리더는 방금 넘겨받은
+상황 — 에도 두 쪽 다 같은 트리거에 대해 같은 중복 제거 키를 만들어내고,
+두 번째 enqueue는 아무 일도 하지 않습니다. 스케줄러를 몇 개의 인스턴스가
+실행하든 작업은 클러스터 전체에서 정확히 한 번만 실행됩니다.
+
+등록된 일정은 레지스트리에도 게시되므로, Inspector·CLI·웹 콘솔에서 아직
+한 번도 실행되지 않은 일정까지도 — 마지막 실행 시각과 생존 여부와 함께 —
+조회할 수 있습니다.
+
+### 주의: 스케줄러는 enqueue만 합니다
+
+`Scheduler.Start`는 도래한 태스크를 큐에 올릴 뿐, 실행하지는 않습니다.
+스케줄러가 enqueue한 것을 실제로 처리하려면 어딘가에 — 흔히 같은 프로세스
+안에 — `Mux`에 워커가 등록된 `Server`가 함께 실행되고 있어야 합니다. 둘
+다 실행하세요.
+
+```go
+srv := chronos.NewServer(rdb, chronos.ServerConfig{})
+mux := chronos.NewMux()
+chronos.AddHandler(mux, func(ctx context.Context, t *chronos.Task[HealthCheckArgs]) error {
+	return runHealthCheck(ctx)
+})
+
+sched := chronos.NewScheduler(rdb, chronos.SchedulerConfig{})
+chronos.RegisterInterval(sched, 30*time.Second, HealthCheckArgs{})
+
+srv.Start(ctx, mux)
+sched.Start(ctx)
+```
+
+스케줄러만 실행 중이라면 트리거는 대기 중인 태스크로 계속 쌓이기만 하고
+아무도 처리하지 않습니다.
+
+전체 시그니처는
+[pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go)에
+문서화되어 있습니다.
+
+### 다음
+
+이전 태스크가 성공해야만 다음 태스크가 시작되는 순차 실행을 다루는
+[체인](/ko/docs/#chains) 문서로 이어서 보세요.

@@ -1,0 +1,94 @@
+---
+title: Scheduling
+slug: scheduling
+---
+
+A `Scheduler` fires recurring jobs — on a fixed interval or a cron
+expression — by enqueueing a task each time the schedule is due. The key
+differentiator from a plain `time.Ticker` or cron library: **every instance
+of your service can run the scheduler**, and each trigger is still enqueued
+exactly once cluster-wide. That's possible because one instance holds a
+Redis-backed leader lock at any moment, and each trigger is enqueued under a
+deterministic dedup key, so a leader handover can't double-fire a job.
+
+### Recipe: interval jobs
+
+```go
+sched := chronos.NewScheduler(rdb, chronos.SchedulerConfig{})
+
+// every 30s (interval must be >= 1s)
+chronos.RegisterInterval(sched, 30*time.Second, HealthCheckArgs{})
+
+sched.Start(ctx)          // safe on every instance
+defer sched.Shutdown(ctx)
+```
+
+`RegisterInterval` accepts the usual per-schedule options (`WithQueue`,
+`WithMaxRetry`, ...). The interval must be at least 1 second — a sub-second
+schedule can't survive a leader failover, since failover itself takes on the
+order of `LeaderTTL`.
+
+### Recipe: cron jobs
+
+```go
+// standard 5-field cron
+chronos.RegisterCron(sched, "0 0 * * *", DailyReportArgs{})
+```
+
+`RegisterCron` takes a standard 5-field cron expression and the same options
+as `RegisterInterval`. Both must be registered before `Start` is called.
+
+### How the leader election works
+
+Only one scheduler instance actually enqueues at a time — the elected
+**leader**. Internally this is a Redis `SET NX PX` lock: an instance acquires
+it if it's vacant, or renews it (`PEXPIRE`) if it already holds it, with a
+TTL of `SchedulerConfig.LeaderTTL` (default 5s). Every instance also
+subscribes to a pub/sub channel; a leader that shuts down calls
+`ResignLeadership`, which deletes the lock *and* publishes a resignation
+notice so a follower can re-elect immediately instead of waiting out the
+full TTL. If the leader dies without resigning (crash, network partition),
+the lock simply expires and another instance picks it up within `LeaderTTL`.
+
+Either way, each trigger is enqueued under a deterministic dedup key
+(`<schedule>:<trigger-unix>`) that outlives the handover window. So even in
+a split-brain moment — old leader still believes it's leader, new leader has
+just taken over — both would produce the same dedup key for the same
+trigger, and the second enqueue is a no-op. A job fires once, cluster-wide,
+no matter how many instances are running the scheduler.
+
+Registered schedules are also published to a registry, so the Inspector, CLI
+and web console can list them — with last-fired time and liveness — even
+before they first fire.
+
+### Gotcha: the scheduler only enqueues
+
+`Scheduler.Start` puts due tasks onto a queue; it does not execute them. You
+still need a `Server` (with workers registered on a `Mux`) running somewhere
+— often the same process — to actually process what the scheduler
+enqueues. Run both:
+
+```go
+srv := chronos.NewServer(rdb, chronos.ServerConfig{})
+mux := chronos.NewMux()
+chronos.AddHandler(mux, func(ctx context.Context, t *chronos.Task[HealthCheckArgs]) error {
+	return runHealthCheck(ctx)
+})
+
+sched := chronos.NewScheduler(rdb, chronos.SchedulerConfig{})
+chronos.RegisterInterval(sched, 30*time.Second, HealthCheckArgs{})
+
+srv.Start(ctx, mux)
+sched.Start(ctx)
+```
+
+If only the scheduler runs, triggers pile up as pending tasks and nothing
+ever handles them.
+
+Full signatures are on
+[pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
+
+### Next
+
+Continue with [Chains](/docs/#chains) to run a sequence of tasks where each
+one starts only after the previous succeeds.
