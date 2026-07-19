@@ -1,7 +1,8 @@
 :root {
   /* Tailwind utility tokens (text-foreground / bg-background) used by landing sections */
-  --foreground: #1a2233;
-  --background: #ffffff;
+  /* space-separated RGB channels so Tailwind's rgb(var(--x) / <alpha-value>) opacity syntax works */
+  --foreground: 26 34 51;
+  --background: 255 255 255;
 
   /* light theme */
   --mi-bg: #ffffff;
@@ -31,8 +32,8 @@
 }
 
 [data-theme='dark'] {
-  --foreground: #dde3ee;
-  --background: #0c1017;
+  --foreground: 221 227 238;
+  --background: 12 16 23;
 
   --mi-bg: #0c1017;
   --mi-bg-alt: #11161f;
