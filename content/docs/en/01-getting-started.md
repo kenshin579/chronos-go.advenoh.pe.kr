@@ -118,5 +118,5 @@ idempotency keys, checking for prior effect) rather than assuming single deliver
 
 ### Next
 
-Continue with [Tasks & handlers](/docs/tasks-and-handlers) to go deeper on defining
+Continue with [Tasks & handlers](/docs/#tasks-and-handlers) to go deeper on defining
 task types, registering handlers, and handler outcomes.

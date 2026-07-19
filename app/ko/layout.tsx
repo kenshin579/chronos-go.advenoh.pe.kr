@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ko } from '@/lib/i18n/ko';
 import { siteConfig } from '@/lib/site-config';
+import { SetHtmlLang } from '@/components/set-html-lang';
 
 const titleKo = `${siteConfig.name} — Go를 위한 분산 태스크 큐·스케줄러`;
 
@@ -33,5 +34,10 @@ export const metadata: Metadata = {
 };
 
 export default function KoLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <SetHtmlLang lang="ko" />
+      {children}
+    </>
+  );
 }
