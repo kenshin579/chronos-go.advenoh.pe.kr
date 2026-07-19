@@ -5,7 +5,7 @@ import { AutoLangRedirect } from '@/components/auto-lang-redirect';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: `${siteConfig.name} — distributed task queue & scheduler for Go`,
+  title: { absolute: `${siteConfig.name} — distributed task queue & scheduler for Go` },
   description: siteConfig.description,
   alternates: { canonical: '/', languages: { en: '/', ko: '/ko/', 'x-default': '/' } },
 };
