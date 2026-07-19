@@ -1,6 +1,8 @@
 ---
 title: 성능과 벤치마크
 slug: performance
+group: Operating
+description: "asynq 대비 벤치마크 방법론·결과와 재현 방법."
 ---
 
 chronos-go는 chronos-go와 [asynq](https://github.com/hibiken/asynq)에
@@ -100,8 +102,3 @@ make bench
 배포 환경에 대한 처리량 보장으로 여기지 마세요. 이 수치로 용량을
 산정하기 전에 여러분의 하드웨어와 Redis 토폴로지에서 직접 `make bench`를
 다시 실행해 보세요.
-
-### 다음
-
-이 수치들 뒤에 있는 내부 동작을 다루는
-[동작 원리](/ko/docs/#how-it-works) 문서로 이어서 보세요.

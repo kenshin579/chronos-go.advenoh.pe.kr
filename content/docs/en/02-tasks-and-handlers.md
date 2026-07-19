@@ -1,6 +1,8 @@
 ---
 title: Tasks & handlers
 slug: tasks-and-handlers
+group: Core
+description: "Define type-safe Task[T] payloads and route them to handlers with Mux."
 ---
 
 A task in chronos-go is just a struct implementing `Kind() string` (value receiver) —
@@ -62,7 +64,7 @@ panics — each task type gets exactly one handler on a `Mux`.
 Use `AddHandlerR` instead of `AddHandler` when the handler produces a result that a
 later step needs — a resize handler reporting the output size, say. The result is
 JSON-encoded and made available to the next stage via `PrevResult` / `GroupResults`,
-which is how [chains](/docs/#chains) and [groups](/docs/#groups) pass data between
+which is how [chains](/docs/chains/) and [groups](/docs/groups/) pass data between
 steps.
 
 ```go
@@ -110,8 +112,3 @@ retry that actually succeeded but whose ack was lost. Write handlers so that run
 them twice on the same task is safe (e.g. upserts, idempotency keys, checking for prior
 effect) rather than assuming single delivery. Full signatures for `Mux`, `Task[T]`, and
 `TaskArgs` are on [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Enqueue options](/docs/#enqueue-options) to control timing, queue
-routing, retries, uniqueness, and retention at enqueue time.

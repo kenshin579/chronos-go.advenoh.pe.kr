@@ -1,6 +1,8 @@
 ---
 title: Queues & priority
 slug: queues-and-priority
+group: Core
+description: "Weight queues, enforce strict priority, and pause or resume consumption."
 ---
 
 A server can consume from several queues at once, and not every queue deserves
@@ -81,8 +83,3 @@ rather than failing loudly.
 
 Full signatures are on
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Retries & reliability](/docs/#retries-and-reliability) to see
-how failed tasks are retried, dead-lettered, and recovered after a crash.

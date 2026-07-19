@@ -1,6 +1,8 @@
 ---
 title: Getting started
 slug: getting-started
+group: Getting started
+description: "Install chronos-go and run your first task end to end — define, enqueue, handle."
 ---
 
 chronos-go is a Redis-backed distributed task queue and scheduler for Go, with a
@@ -115,8 +117,3 @@ invoked again for it — after a crash mid-processing, after a redelivered messa
 races a slow ack, or after a retry that actually succeeded but whose ack was lost.
 Write handlers so that running them twice on the same task is safe (e.g. upserts,
 idempotency keys, checking for prior effect) rather than assuming single delivery.
-
-### Next
-
-Continue with [Tasks & handlers](/docs/#tasks-and-handlers) to go deeper on defining
-task types, registering handlers, and handler outcomes.

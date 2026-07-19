@@ -1,6 +1,8 @@
 ---
 title: Enqueue 옵션
 slug: enqueue-options
+group: Core
+description: "enqueue 시 실행 시점·큐·재시도·중복 방지·보존을 제어하기."
 ---
 
 `Enqueue`는 태스크가 파이프라인에 들어간 뒤 어떻게 스케줄링되고 처리되는지를
@@ -95,15 +97,10 @@ chronos.Enqueue(ctx, client, EmailArgs{UserID: "u1", Body: "hi"},
 
 ### 주의: 모든 옵션이 모든 곳에서 동작하지는 않습니다
 
-`WithUnique`와 `WithTaskID`는 태스크가 [체인](/ko/docs/#chains)의 한 단계로
+`WithUnique`와 `WithTaskID`는 태스크가 [체인](/ko/docs/chains/)의 한 단계로
 enqueue될 때는 거부됩니다 — 이유는 해당 문서를 참고하세요. 그리고 `WithUnique`
 락은 단순히 발사 후 잊는 TTL이 아닙니다 — 워커가 태스크를 집어 든 순간부터 처리가
 끝날 때까지 서버의 heartbeat가 락을 계속 갱신하며, 이 부분은
-[재시도와 신뢰성](/ko/docs/#retries-and-reliability)에서 다룹니다. 전체 옵션과
+[재시도와 신뢰성](/ko/docs/retries-and-reliability/)에서 다룹니다. 전체 옵션과
 기본값은 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go)에
 문서화되어 있습니다.
-
-### 다음
-
-여러 큐와 워커 동시성이 어떻게 상호작용하는지 살펴보는
-[큐와 우선순위](/ko/docs/#queues-and-priority) 문서로 이어서 보세요.

@@ -1,10 +1,12 @@
 ---
 title: Groups
 slug: groups
+group: Workflows
+description: "Fan out tasks in parallel and fan in with an on-complete callback."
 ---
 
 A `Group` fans members out in parallel and runs a callback once **all of
-them succeed** — the fan-in counterpart to a [Chain](/docs/#chains)'s
+them succeed** — the fan-in counterpart to a [Chain](/docs/chains/)'s
 strictly sequential links.
 
 ### Recipe: fan out and fan in
@@ -104,8 +106,3 @@ expires — the callback then never fires.
 
 Full signatures are on
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Observability](/docs/#observability) to see queues and tasks
-via metrics, the Inspector API, and the CLI.

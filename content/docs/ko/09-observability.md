@@ -1,6 +1,8 @@
 ---
 title: 관측성
 slug: observability
+group: Operating
+description: "메트릭·Inspector API·chronos CLI로 큐와 태스크를 관찰하기."
 ---
 
 chronos-go는 헤드리스 라이브러리이기 때문에, 지금 무슨 일이 일어나고
@@ -79,13 +81,8 @@ default completed`를 사용하고, `task run <queue> <id>`는 데드레터된
 enqueue, forward, 복구는 모두 계속 동작하므로, 처리되지 않은 작업이
 pending 상태로 쌓입니다. 큐 사이의 우선순위 가중치에도 영향을 주지
 않습니다. 큐 가중치와 소비가 어떻게 상호작용하는지는
-[큐와 우선순위](/ko/docs/#queues-and-priority) 문서를 참고하세요.
+[큐와 우선순위](/ko/docs/queues-and-priority/) 문서를 참고하세요.
 
 전체 시그니처는
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go)에
 문서화되어 있습니다.
-
-### 다음
-
-샤딩된 Redis 배포에서 chronos-go를 운영하는
-[Redis Cluster](/ko/docs/#redis-cluster) 문서로 이어서 보세요.

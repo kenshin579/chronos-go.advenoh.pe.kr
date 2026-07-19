@@ -1,6 +1,8 @@
 ---
 title: Redis Cluster
 slug: redis-cluster
+group: Operating
+description: "Run chronos-go on Redis Cluster with hash-tagged, slot-safe keys."
 ---
 
 chronos-go works on Redis Cluster **out of the box**: every key belonging to
@@ -54,8 +56,3 @@ make test-cluster
 
 Full signatures are on
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Performance & benchmarks](/docs/#performance) to see how
-chronos-go's throughput scales with concurrency.

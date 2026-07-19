@@ -1,6 +1,8 @@
 ---
 title: 스케줄링
 slug: scheduling
+group: Core
+description: "리더 선출로 여러 인스턴스에서 interval·cron 작업을 정확히 한 번 실행하기."
 ---
 
 `Scheduler`는 일정이 도래할 때마다 태스크를 enqueue해서 반복 작업을
@@ -88,8 +90,3 @@ sched.Start(ctx)
 전체 시그니처는
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go)에
 문서화되어 있습니다.
-
-### 다음
-
-이전 태스크가 성공해야만 다음 태스크가 시작되는 순차 실행을 다루는
-[체인](/ko/docs/#chains) 문서로 이어서 보세요.

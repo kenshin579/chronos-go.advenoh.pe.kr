@@ -1,6 +1,8 @@
 ---
 title: Observability
 slug: observability
+group: Operating
+description: "Inspect queues and tasks with metrics, the Inspector API and the chronos CLI."
 ---
 
 chronos-go is a headless library, so it ships ways to *see* what it is
@@ -78,13 +80,8 @@ task (a chain link or group member included).
 second — enqueueing, forwarding and recovery all keep running, so work
 piles up as pending rather than draining. It doesn't affect priority
 weighting between queues either; see
-[Queues and priority](/docs/#queues-and-priority) for how queue weights and
+[Queues and priority](/docs/queues-and-priority/) for how queue weights and
 consumption interact.
 
 Full signatures are on
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Redis Cluster](/docs/#redis-cluster) to run chronos-go
-across a sharded Redis deployment.

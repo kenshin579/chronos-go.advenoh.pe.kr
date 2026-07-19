@@ -1,6 +1,8 @@
 ---
 title: Enqueue options
 slug: enqueue-options
+group: Core
+description: "Control timing, queue, retries, uniqueness and retention when you enqueue."
 ---
 
 `Enqueue` takes a variadic list of `Option`s that control how a task is scheduled and
@@ -96,14 +98,9 @@ bounds the worst case.
 ### Gotcha: not every option works everywhere
 
 `WithUnique` and `WithTaskID` are rejected when a task is enqueued as a step inside a
-[chain](/docs/#chains) — see that doc for why. And a `WithUnique` lock isn't just a
+[chain](/docs/chains/) — see that doc for why. And a `WithUnique` lock isn't just a
 fire-and-forget TTL: once a worker picks the task up, the server's heartbeat renews the
 lock for as long as processing takes, a detail covered in
-[Retries & reliability](/docs/#retries-and-reliability). Full option and default
+[Retries & reliability](/docs/retries-and-reliability/). Full option and default
 values are documented on
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Queues & priority](/docs/#queues-and-priority) to see how multiple
-queues and worker concurrency interact.
