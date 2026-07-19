@@ -4,6 +4,7 @@ import { ko } from '@/lib/i18n/ko';
 import { Nav } from '@/components/nav';
 import { Footer } from '@/components/footer';
 import { DocsShell, PrevNext } from '@/components/docs/docs-layout';
+import { MermaidRunner } from '@/components/mermaid-runner';
 
 export function generateStaticParams() {
   return listSlugs('ko').map((slug) => ({ slug }));
@@ -41,6 +42,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <PrevNext prev={doc.prev} next={doc.next} lang="ko" />
       </DocsShell>
       <Footer t={ko} />
+      <MermaidRunner />
     </>
   );
 }
