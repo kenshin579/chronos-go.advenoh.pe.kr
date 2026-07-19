@@ -4,7 +4,7 @@ import { Landing } from '@/components/landing';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: `${siteConfig.name} — Go 분산 태스크 큐·스케줄러`,
+  title: { absolute: `${siteConfig.name} — Go 분산 태스크 큐·스케줄러` },
   description: siteConfig.description,
   alternates: { canonical: '/ko/', languages: { en: '/', ko: '/ko/', 'x-default': '/' } },
 };

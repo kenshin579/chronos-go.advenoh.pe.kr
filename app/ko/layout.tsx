@@ -6,7 +6,7 @@ import { SetHtmlLang } from '@/components/set-html-lang';
 const titleKo = `${siteConfig.name} — Go를 위한 분산 태스크 큐·스케줄러`;
 
 export const metadata: Metadata = {
-  title: { absolute: titleKo },
+  title: { default: titleKo, template: `%s | ${siteConfig.name}` },
   description: ko.hero.lead,
   openGraph: {
     type: 'website',
