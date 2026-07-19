@@ -1,4 +1,8 @@
 :root {
+  /* Tailwind utility tokens (text-foreground / bg-background) used by landing sections */
+  --foreground: #1a2233;
+  --background: #ffffff;
+
   /* light theme */
   --mi-bg: #ffffff;
   --mi-bg-alt: #f6f8fc;
@@ -27,6 +31,9 @@
 }
 
 [data-theme='dark'] {
+  --foreground: #dde3ee;
+  --background: #0c1017;
+
   --mi-bg: #0c1017;
   --mi-bg-alt: #11161f;
   --mi-text: #dde3ee;
