@@ -1,6 +1,8 @@
 ---
 title: Retries & reliability
 slug: retries-and-reliability
+group: Core
+description: "Backoff retries, dead-letter hooks, crash recovery and heartbeat renewal."
 ---
 
 chronos-go is **at-least-once**: a task can run more than once (a worker
@@ -14,7 +16,7 @@ doesn't lose the task.
 ### Handler outcomes
 
 - return `nil` → success (acked and removed, or kept for `WithRetention` if
-  set — see [Enqueue options](/docs/#enqueue-options)).
+  set — see [Enqueue options](/docs/enqueue-options/)).
 - return an `error` → retried with backoff until `MaxRetry` is exhausted, then
   dead-lettered.
 - return `chronos.SkipRetry(err)` → dead-lettered immediately.
@@ -56,7 +58,7 @@ srv := chronos.NewServer(rdb, chronos.ServerConfig{
 
 `OnDeadLetter` fires whenever a task exhausts its retries or returns a
 `SkipRetry` error — whether it ends up archived or discarded via
-`WithDeadLetterDiscard` (see [Enqueue options](/docs/#enqueue-options)). It's
+`WithDeadLetterDiscard` (see [Enqueue options](/docs/enqueue-options/)). It's
 also invoked when the *recoverer* dead-letters a task whose retry budget ran
 out across a crash, so this one hook covers both paths.
 
@@ -117,8 +119,3 @@ than crashing the whole server, so a panicking handler still needs
 
 Full signatures are on
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Scheduling](/docs/#scheduling) to run tasks on a recurring
-schedule instead of enqueueing them one at a time.

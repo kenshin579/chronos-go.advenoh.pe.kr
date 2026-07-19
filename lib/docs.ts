@@ -5,17 +5,40 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
+import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
 
 export type DocLang = 'en' | 'ko';
 
-export type DocSection = {
+export const GROUPS = ['Getting started', 'Core', 'Workflows', 'Operating', 'Reference'] as const;
+export type DocGroup = (typeof GROUPS)[number];
+
+export type DocMeta = {
   slug: string;
   title: string;
-  html: string;
+  group: DocGroup;
+  description: string;
+  order: number;
 };
+export type DocNavGroup = { group: DocGroup; items: DocMeta[] };
+export type DocArticle = DocMeta & { html: string; prev: DocMeta | null; next: DocMeta | null };
 
 const CONTENT_ROOT = path.join(process.cwd(), 'content', 'docs');
+
+/** content가 `### `부터 시작해 h1(제목) 다음 h3가 되는 skip을 막기 위해 heading depth를 한 단계씩 올린다(h2 하한). */
+function remarkShiftHeadings() {
+  return (tree: any) => {
+    const walk = (node: { type?: string; depth?: number; children?: unknown[] }) => {
+      if (node.type === 'heading' && typeof node.depth === 'number') {
+        node.depth = Math.max(2, node.depth - 1);
+      }
+      if (Array.isArray(node.children)) {
+        for (const c of node.children) walk(c as typeof node);
+      }
+    };
+    walk(tree);
+  };
+}
 
 export function listDocFiles(lang: DocLang): string[] {
   return fs
@@ -35,34 +58,95 @@ export function assertLangParity(): void {
   }
 }
 
-export async function loadDocs(lang: DocLang): Promise<DocSection[]> {
+function parseFile(lang: DocLang, file: string): { meta: DocMeta; content: string } {
+  const raw = fs.readFileSync(path.join(CONTENT_ROOT, lang, file), 'utf8');
+  const { data, content } = matter(raw);
+  const title = data.title as unknown;
+  const slug = data.slug as unknown;
+  const group = data.group as unknown;
+  const description = data.description as unknown;
+  if (!title || !slug || !group || !description) {
+    throw new Error(`${lang}/${file}: frontmatter must include title, slug, group, description`);
+  }
+  if (!/^[a-z0-9-]+$/.test(String(slug))) {
+    throw new Error(`${lang}/${file}: slug "${slug}" must match [a-z0-9-]+`);
+  }
+  if (!(GROUPS as readonly string[]).includes(String(group))) {
+    throw new Error(`${lang}/${file}: group "${group}" must be one of ${GROUPS.join(', ')}`);
+  }
+  const m = file.match(/^(\d+)-/);
+  const order = m ? parseInt(m[1], 10) : 999;
+  return {
+    meta: {
+      slug: String(slug),
+      title: String(title),
+      group: String(group) as DocGroup,
+      description: String(description),
+      order,
+    },
+    content,
+  };
+}
+
+/** 언어별 전체 문서 메타(파일명 NN 순서). */
+export function readAllMeta(lang: DocLang): DocMeta[] {
   assertLangParity();
-  const sections: DocSection[] = [];
-  for (const file of listDocFiles(lang)) {
-    const raw = fs.readFileSync(path.join(CONTENT_ROOT, lang, file), 'utf8');
-    const { data, content } = matter(raw);
-    if (!data.title || !data.slug) {
-      throw new Error(`${lang}/${file}: frontmatter must include title and slug`);
-    }
-    if (!/^[a-z0-9-]+$/.test(String(data.slug))) {
-      throw new Error(`${lang}/${file}: slug "${data.slug}" must match [a-z0-9-]+`);
-    }
-    const html = String(
-      await unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(remarkRehype)
-        .use(rehypeStringify)
-        .process(content),
-    );
-    sections.push({ slug: String(data.slug), title: String(data.title), html });
-  }
+  const metas = listDocFiles(lang).map((f) => parseFile(lang, f).meta);
   const seen = new Set<string>();
-  for (const s of sections) {
-    if (seen.has(s.slug)) {
-      throw new Error(`${lang}: duplicate slug "${s.slug}" in content/docs — slugs must be unique per language`);
+  for (const m of metas) {
+    if (seen.has(m.slug)) {
+      throw new Error(`${lang}: duplicate slug "${m.slug}" in content/docs`);
     }
-    seen.add(s.slug);
+    seen.add(m.slug);
   }
-  return sections;
+  return metas.sort((a, b) => a.order - b.order);
+}
+
+export function listSlugs(lang: DocLang): string[] {
+  return readAllMeta(lang).map((m) => m.slug);
+}
+
+/** 사이드바용: GROUPS 순서로 묶인 그룹별 문서 목록. */
+export function getDocsNav(lang: DocLang): DocNavGroup[] {
+  const metas = readAllMeta(lang);
+  return GROUPS.map((group) => ({ group, items: metas.filter((m) => m.group === group) })).filter(
+    (g) => g.items.length > 0,
+  );
+}
+
+async function renderMarkdown(content: string): Promise<string> {
+  return String(
+    await unified()
+      .use(remarkParse)
+      .use(remarkShiftHeadings)
+      .use(remarkGfm)
+      .use(remarkRehype)
+      .use(rehypeHighlight, { detect: false, ignoreMissing: true })
+      .use(rehypeStringify)
+      .process(content),
+  );
+}
+
+/** 단일 article: 렌더된 html + 선형 순서상의 prev/next. */
+export async function loadDoc(lang: DocLang, slug: string): Promise<DocArticle> {
+  const metas = readAllMeta(lang);
+  const idx = metas.findIndex((m) => m.slug === slug);
+  if (idx === -1) {
+    throw new Error(`${lang}: no doc with slug "${slug}"`);
+  }
+  let content = '';
+  for (const f of listDocFiles(lang)) {
+    const parsed = parseFile(lang, f);
+    if (parsed.meta.slug === slug) {
+      content = parsed.content;
+      break;
+    }
+  }
+  const html = await renderMarkdown(content);
+  return {
+    ...metas[idx],
+    html,
+    prev: idx > 0 ? metas[idx - 1] : null,
+    next: idx < metas.length - 1 ? metas[idx + 1] : null,
+  };
 }

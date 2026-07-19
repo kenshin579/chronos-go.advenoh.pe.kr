@@ -10,7 +10,7 @@ export function Features({ t, lang }: { t: Dict; lang: 'en' | 'ko' }) {
       <p className="mt-2 text-foreground/70">{t.features.lead}</p>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {t.features.items.map((f) => (
-          <Link key={f.slug} href={`${base}#${f.slug}`} className="rounded-xl border border-black/10 dark:border-white/10 p-5 hover:border-indigo-500/50 transition">
+          <Link key={f.slug} href={`${base}${f.slug}/`} className="rounded-xl border border-black/10 dark:border-white/10 p-5 hover:border-indigo-500/50 transition">
             <h3 className="font-semibold">{f.title}</h3>
             <p className="mt-1 text-sm text-foreground/70">{f.desc}</p>
           </Link>

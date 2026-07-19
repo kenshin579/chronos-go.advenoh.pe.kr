@@ -1,10 +1,12 @@
 ---
 title: 그룹
 slug: groups
+group: Workflows
+description: "태스크를 병렬로 fan-out 하고 완료 콜백으로 fan-in 하기."
 ---
 
 `Group`은 멤버들을 병렬로 fan-out하고, **멤버 전부가 성공했을 때** 콜백을
-실행합니다 — [체인](/ko/docs/#chains)의 엄격한 순차 링크와 짝을 이루는
+실행합니다 — [체인](/ko/docs/chains/)의 엄격한 순차 링크와 짝을 이루는
 fan-in 개념입니다.
 
 ### 레시피: fan-out과 fan-in
@@ -107,8 +109,3 @@ g.OnComplete(Verify{}).Enqueue(ctx, client)
 전체 시그니처는
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go)에
 문서화되어 있습니다.
-
-### 다음
-
-메트릭, Inspector API, CLI로 큐와 태스크를 들여다보는
-[관측성](/ko/docs/#observability) 문서로 이어서 보세요.

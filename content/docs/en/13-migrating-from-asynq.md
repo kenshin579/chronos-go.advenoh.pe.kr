@@ -1,6 +1,8 @@
 ---
 title: Migrating from asynq
 slug: migrating-from-asynq
+group: Reference
+description: "Map asynq concepts to chronos-go and port your handlers and scheduler."
 ---
 
 [asynq](https://github.com/hibiken/asynq) is in maintenance mode, and a lot of
@@ -161,10 +163,10 @@ making sure exactly one instance of your service runs it — two copies means
 duplicate enqueues, so teams end up designating a leader pod, or running
 schedulers as a separate deployment, by hand. With `chronos.Scheduler`
 (`chronos.RegisterInterval` / `chronos.RegisterCron`, see
-[Scheduling](/docs/#scheduling)), you register the same schedule on every
+[Scheduling](/docs/scheduling/)), you register the same schedule on every
 instance and only one of them actually fires at a time — the built-in leader
 election and deterministic dedup key handle the coordination that asynq
-leaves to you (see [How it works](/docs/#how-it-works) for the mechanism).
+leaves to you (see [How it works](/docs/how-it-works/) for the mechanism).
 
 ### Gotcha: payload serialization and lock renewal work differently
 
@@ -177,15 +179,15 @@ generic path does, a source of subtle bugs.
 The other difference is the unique lock. asynq's lock is TTL-only: pick a TTL
 too short for how long the job actually takes, and the lock can expire while
 the task is still processing, letting a duplicate slip in. chronos-go's
-`WithUnique` lock (see [Enqueue options](/docs/#enqueue-options)) is
+`WithUnique` lock (see [Enqueue options](/docs/enqueue-options/)) is
 initially just a TTL too, but once a worker picks the task up, the server's
 heartbeat renews it for as long as processing takes — see
-[Retries & reliability](/docs/#retries-and-reliability) for the heartbeat
+[Retries & reliability](/docs/retries-and-reliability/) for the heartbeat
 mechanism. Size the TTL for the wait, not the run.
 
 ### Where to go from here
 
 That's the whole surface this guide covers. Go back to
-[Getting started](/docs/#getting-started) for the full walkthrough, or head
+[Getting started](/docs/getting-started/) for the full walkthrough, or head
 to the source and issue tracker on GitHub:
 [github.com/kenshin579/chronos-go](https://github.com/kenshin579/chronos-go).

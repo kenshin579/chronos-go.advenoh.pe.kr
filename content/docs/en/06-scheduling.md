@@ -1,6 +1,8 @@
 ---
 title: Scheduling
 slug: scheduling
+group: Core
+description: "Run interval and cron jobs once across many instances via leader election."
 ---
 
 A `Scheduler` fires recurring jobs — on a fixed interval or a cron
@@ -87,8 +89,3 @@ ever handles them.
 
 Full signatures are on
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Chains](/docs/#chains) to run a sequence of tasks where each
-one starts only after the previous succeeds.

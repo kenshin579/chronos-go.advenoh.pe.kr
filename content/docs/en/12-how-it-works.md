@@ -1,6 +1,8 @@
 ---
 title: How it works & delivery
 slug: how-it-works
+group: Reference
+description: "Streams, ZSETs, the forwarder and recoverer — and at-least-once delivery."
 ---
 
 chronos-go splits work into two tracks. Anything ready to run *right now* rides
@@ -45,7 +47,7 @@ message sits claimed-but-unacked longer than `RecoverMinIdle`, the recoverer
 picks it up with `XAUTOCLAIM` and, based on the attempt count already tracked
 in the task's hash, either re-queues it for another attempt or sends it to the
 dead-letter path — the same path an ordinary exhausted retry takes (see
-[Retries & reliability](/docs/#retries-and-reliability)). This is what makes
+[Retries & reliability](/docs/retries-and-reliability/)). This is what makes
 "the worker that grabbed a task crashed" different from "the task was lost" —
 the Stream's PEL remembers it was handed out, and the recoverer is what acts
 on that memory.
@@ -82,8 +84,8 @@ redelivering it), and chronos-go, like the Stream/PEL model it's built on,
 chooses never to lose one. That's why handlers must be idempotent: design
 them so running the same task twice — same upsert, same idempotency key,
 same check-then-act — produces the same end state as running it once (see
-the idempotency gotchas in [Tasks & handlers](/docs/#tasks-and-handlers) and
-[Retries & reliability](/docs/#retries-and-reliability)).
+the idempotency gotchas in [Tasks & handlers](/docs/tasks-and-handlers/) and
+[Retries & reliability](/docs/retries-and-reliability/)).
 
 ### Gotcha: this doc is for understanding, not an API surface
 
@@ -92,10 +94,5 @@ nothing here adds a call you need to make. Streams, ZSETs, the forwarder, and
 the recoverer are what already runs inside `srv.Start(ctx, mux)` — this doc
 is a map of that behavior, not a new surface on top of `Mux`, `Client`, and
 `Server`. If you want to watch it happen against real Redis, see
-[Observability](/docs/#observability) for inspecting queues, streams, and
+[Observability](/docs/observability/) for inspecting queues, streams, and
 dead-lettered tasks directly.
-
-### Next
-
-Continue with [Migrating from asynq](/docs/#migrating-from-asynq) to see how
-this maps onto an asynq deployment you're moving off of.

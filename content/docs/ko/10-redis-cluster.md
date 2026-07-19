@@ -1,6 +1,8 @@
 ---
 title: Redis Cluster
 slug: redis-cluster
+group: Operating
+description: "해시태그로 슬롯 안전한 키를 쓰는 Redis Cluster에서 chronos-go 실행하기."
 ---
 
 chronos-go는 **별도 설정 없이** Redis Cluster에서 동작합니다: 큐에 속한
@@ -59,8 +61,3 @@ make test-cluster
 전체 시그니처는
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go)에
 문서화되어 있습니다.
-
-### 다음
-
-concurrency에 따라 chronos-go의 처리량이 어떻게 확장되는지 살펴보는
-[성능과 벤치마크](/ko/docs/#performance) 문서로 이어서 보세요.

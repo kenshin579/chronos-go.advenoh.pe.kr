@@ -1,17 +1,4 @@
-type IconName =
-  | 'logo'
-  | 'github'
-  | 'sun'
-  | 'moon'
-  | 'chev'
-  | 'download'
-  | 'arrow'
-  | 'tree'
-  | 'chart'
-  | 'diff'
-  | 'send'
-  | 'record'
-  | 'shield';
+type IconName = 'logo' | 'github' | 'sun' | 'moon';
 
 const paths: Record<IconName, React.ReactNode> = {
   logo: (
@@ -35,15 +22,6 @@ const paths: Record<IconName, React.ReactNode> = {
     </>
   ),
   moon: <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />,
-  chev: <path d="m6 9 6 6 6-6" />,
-  download: <path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16" />,
-  arrow: <path d="M5 12h14m0 0-6-6m6 6-6 6" />,
-  tree: <path d="M6 3v18M6 8h7a3 3 0 0 1 3 3v0M6 15h9a3 3 0 0 1 3 3v0" />,
-  chart: <path d="M3 21h18M5 17l4-6 3 3 4-8 3 5" />,
-  diff: <path d="M9 7h11M9 12h11M9 17h11M4 7h.01M4 12h.01M4 17h.01" />,
-  send: <path d="m3 11 18-8-8 18-2.5-7.5L3 11Z" />,
-  record: <circle cx="12" cy="12" r="6" fill="currentColor" stroke="none" />,
-  shield: <path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6l-7-3Z" />,
 };
 
 export function Icon({ name, size = 16 }: { name: IconName; size?: number }) {

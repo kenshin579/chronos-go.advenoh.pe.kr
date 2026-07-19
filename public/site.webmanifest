@@ -1,0 +1,13 @@
+{
+  "name": "chronos-go",
+  "short_name": "chronos-go",
+  "description": "Redis-backed distributed task queue and scheduler for Go.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1524",
+  "theme_color": "#6366f1",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

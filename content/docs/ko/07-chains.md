@@ -1,6 +1,8 @@
 ---
 title: 체인
 slug: chains
+group: Workflows
+description: "태스크를 순차 실행하고 단계 간 결과를 다음으로 전달하기."
 ---
 
 `Chain`은 태스크 시퀀스를 엄격하게 하나씩 순서대로 실행합니다 — 각 링크는
@@ -49,7 +51,7 @@ chronos.AddHandlerR(mux, func(ctx context.Context, task *chronos.Task[ThumbnailA
 
 이는 병렬 스테이지에서도 동일하게 쓰이는 결과 전달 메커니즘입니다 —
 여러 멤버의 결과를 `GroupResults`로 모으는 `ThenGroup` 스테이지에 대한
-전체 설명은 [그룹](/ko/docs/#groups) 문서를 참고하세요.
+전체 설명은 [그룹](/ko/docs/groups/) 문서를 참고하세요.
 
 ### 주의: 실패하면 체인이 멈춥니다
 
@@ -77,8 +79,3 @@ chronos.AddHandlerR(mux, func(ctx context.Context, task *chronos.Task[ThumbnailA
 전체 시그니처는
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go)에
 문서화되어 있습니다.
-
-### 다음
-
-태스크를 병렬로 실행하고 그 결과들을 하나의 콜백으로 모으는
-[그룹](/ko/docs/#groups) 문서로 이어서 보세요.

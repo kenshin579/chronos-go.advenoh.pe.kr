@@ -1,6 +1,8 @@
 ---
 title: Chains
 slug: chains
+group: Workflows
+description: "Run tasks in sequence and relay results from one link to the next."
 ---
 
 A `Chain` runs a sequence of tasks strictly one after another — each link is
@@ -49,7 +51,7 @@ chronos.AddHandlerR(mux, func(ctx context.Context, task *chronos.Task[ThumbnailA
 ```
 
 This is the same result-relay mechanism used for parallel stages — see
-[Groups](/docs/#groups) for how a `ThenGroup` stage fans results in from
+[Groups](/docs/groups/) for how a `ThenGroup` stage fans results in from
 multiple members via `GroupResults`.
 
 ### Gotcha: failure stops the chain
@@ -76,8 +78,3 @@ A few other constraints to keep in mind:
 
 Full signatures are on
 [pkg.go.dev](https://pkg.go.dev/github.com/kenshin579/chronos-go).
-
-### Next
-
-Continue with [Groups](/docs/#groups) to run tasks in parallel and fan their
-results into a single callback.

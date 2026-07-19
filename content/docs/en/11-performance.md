@@ -1,6 +1,8 @@
 ---
 title: Performance & benchmarks
 slug: performance
+group: Operating
+description: "Benchmark methodology and results versus asynq, and how to reproduce them."
 ---
 
 chronos-go ships a benchmark suite that runs the same workload against
@@ -99,8 +101,3 @@ figures as **relative comparisons against asynq under identical
 conditions**, not as a throughput guarantee for your deployment; re-run
 `make bench` on your own hardware and Redis topology before sizing anything
 on these numbers.
-
-### Next
-
-Continue with [How it works](/docs/#how-it-works) for the internals behind
-these numbers.
