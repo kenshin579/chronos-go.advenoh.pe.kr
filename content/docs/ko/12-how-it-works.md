@@ -15,6 +15,15 @@ recoverer 루프는 Stream 자체를 지켜보며, 크래시한 워커가 끝내
 찾아냅니다. 이 문서는 이 조각들이 어떻게 맞물리는지, 그리고 그것이 여러분의
 핸들러가 실제로 몇 번 실행되는지에 어떤 의미를 갖는지를 설명합니다.
 
+```mermaid
+flowchart LR
+  E["Enqueue"] --> S[("Redis Stream")]
+  T["Delayed · retry · scheduled"] --> Z[("ZSETs")]
+  Z -- "forwarder promotes due" --> S
+  S --> W["Workers"]
+  W -. "recoverer reclaims" .-> S
+```
+
 ### 즉시 처리 경로: Stream + 컨슈머 그룹
 
 각 큐는 하나의 컨슈머 그룹을 가진 하나의 Redis Stream입니다. 워커는

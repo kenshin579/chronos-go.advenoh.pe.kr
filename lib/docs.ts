@@ -40,6 +40,38 @@ function remarkShiftHeadings() {
   };
 }
 
+// Convert ```mermaid fenced blocks into <div class="mermaid"> so the client
+// MermaidRunner can render them (and Shiki skips them).
+function rehypeMermaid() {
+  return (tree: unknown) => {
+    const walk = (node: any) => {
+      if (!node || !Array.isArray(node.children)) return;
+      node.children = node.children.map((child: any) => {
+        if (
+          child.tagName === 'pre' &&
+          Array.isArray(child.children) &&
+          child.children.length === 1 &&
+          child.children[0].tagName === 'code' &&
+          (child.children[0].properties?.className || []).includes('language-mermaid')
+        ) {
+          const text = (child.children[0].children || [])
+            .map((c: any) => (typeof c.value === 'string' ? c.value : ''))
+            .join('');
+          return {
+            type: 'element',
+            tagName: 'div',
+            properties: { className: ['mermaid'] },
+            children: [{ type: 'text', value: text }],
+          };
+        }
+        return child;
+      });
+      node.children.forEach(walk);
+    };
+    walk(tree);
+  };
+}
+
 export function listDocFiles(lang: DocLang): string[] {
   return fs
     .readdirSync(path.join(CONTENT_ROOT, lang))
@@ -121,6 +153,7 @@ async function renderMarkdown(content: string): Promise<string> {
       .use(remarkShiftHeadings)
       .use(remarkGfm)
       .use(remarkRehype)
+      .use(rehypeMermaid)
       .use(rehypeShiki, { theme: 'one-dark-pro' })
       .use(rehypeStringify)
       .process(content),

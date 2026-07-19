@@ -15,6 +15,15 @@ recoverer loop watches the Stream itself for work a crashed worker never
 finished. This doc walks through how those pieces fit together and what that
 means for how often your handler actually runs.
 
+```mermaid
+flowchart LR
+  E["Enqueue"] --> S[("Redis Stream")]
+  T["Delayed · retry · scheduled"] --> Z[("ZSETs")]
+  Z -- "forwarder promotes due" --> S
+  S --> W["Workers"]
+  W -. "recoverer reclaims" .-> S
+```
+
 ### The immediate path: Stream + consumer group
 
 Each queue is one Redis Stream with one consumer group. A worker calls
