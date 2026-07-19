@@ -664,3 +664,18 @@ body {
   --pagefind-ui-border-radius: 10px;
   --pagefind-ui-font: inherit;
 }
+
+/* --- hero scheduler diagram --- */
+.sd-panel {
+  background: #0e1524;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+}
+.sd-caption {
+  margin: 12px 0 0;
+  text-align: center;
+  color: #8b93a7;
+  font-size: 12px;
+  line-height: 1.5;
+}
