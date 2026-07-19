@@ -61,9 +61,10 @@ describe('loadDoc', () => {
     expect(d.next).toBeNull();
     expect(d.prev?.slug).toBe('how-it-works');
   });
-  it('applies syntax highlighting (hljs classes) to code blocks', async () => {
+  it('applies syntax highlighting (Shiki) to code blocks', async () => {
     const d = await loadDoc('en', 'getting-started');
-    expect(d.html).toContain('hljs');
+    expect(d.html).toContain('shiki');
+    expect(d.html).toContain('style="color:');
   });
   it('renders ko as well', async () => {
     const d = await loadDoc('ko', 'scheduling');

@@ -614,29 +614,23 @@ body {
   }
 }
 
-/* --- docs code blocks (highlight.js) --- */
 .mi-prose pre { overflow-x: auto; border-radius: 10px; margin: 1rem 0; }
-.mi-prose pre code.hljs {
-  display: block;
+
+/* --- docs code blocks (Shiki) --- */
+.mi-prose pre.shiki {
   padding: 1rem 1.15rem;
-  background: #0e1524;
-  color: #e2e8f0;
+  margin: 1rem 0;
+  border: none;
+  border-radius: 10px;
+  overflow-x: auto;
   font-size: 0.86em;
   line-height: 1.6;
-  border-radius: 10px;
 }
-.mi-prose pre:has(code.hljs) { background: transparent; border: none; padding: 0; }
-.hljs-comment, .hljs-quote { color: #7c8aa5; font-style: italic; }
-.hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-name { color: #a5b4fc; }
-.hljs-string, .hljs-attr, .hljs-symbol, .hljs-meta-string { color: #7ee7c7; }
-.hljs-number, .hljs-literal, .hljs-template-variable { color: #c4b5fd; }
-.hljs-title, .hljs-title.function_, .hljs-section { color: #93c5fd; }
-.hljs-type, .hljs-class .hljs-title, .hljs-title.class_ { color: #818cf8; }
-.hljs-meta, .hljs-bullet { color: #f0abfc; }
-.hljs-deletion { color: #fca5a5; }
-.hljs-addition { color: #86efac; }
-.hljs-emphasis { font-style: italic; }
-.hljs-strong { font-weight: 600; }
+.mi-prose pre.shiki code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
 
 .mi-docs-nav-group { margin-bottom: 1.1rem; }
 .mi-docs-nav .is-active { font-weight: 600; color: var(--mi-accent); }
