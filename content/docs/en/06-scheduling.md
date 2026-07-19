@@ -63,6 +63,31 @@ Registered schedules are also published to a registry, so the Inspector, CLI
 and web console can list them — with last-fired time and liveness — even
 before they first fire.
 
+### When the leader dies
+
+Failover is automatic — you don't coordinate anything:
+
+- **Graceful shutdown** (rolling deploy, scale-down): the leader calls
+  `ResignLeadership`, which releases the lock *and* publishes a resignation, so
+  a standby is elected **immediately** — no gap.
+- **Crash or node loss** (OOM, `SIGKILL`, network partition): the leader stops
+  renewing, its lock expires, and a standby takes over **within `LeaderTTL`**
+  (default 5s; the leader renews at `LeaderTTL/2`).
+
+No trigger is missed or duplicated across the hand-off. The scheduler persists
+each schedule's **`lastFired`** time in Redis, so the new leader fires any
+trigger that came due during the gap — while the deterministic dedup key
+(`<schedule>:<trigger-unix>`) makes a re-fire of the *same* trigger a no-op.
+
+If the pod that went down was **running** a task (as a worker, not the
+scheduler), that's a separate guarantee: the recoverer reclaims the in-flight
+task with `XAUTOCLAIM` and another worker re-runs it — see
+[Retries & reliability](/docs/retries-and-reliability/).
+
+**Tuning `LeaderTTL`:** a shorter TTL fails over faster but renews more often;
+too short risks a premature hand-off if one renewal is briefly delayed. The 5s
+default suits most deployments.
+
 ### Gotcha: the scheduler only enqueues
 
 `Scheduler.Start` puts due tasks onto a queue; it does not execute them. You
