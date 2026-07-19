@@ -14,9 +14,9 @@
   --mi-code-bg: #f1f4f9;
 
   /* brand (테마 무관) */
-  --mi-accent: #4f8cff;
-  --mi-accent-2: #9f6bff;
-  --mi-grad: linear-gradient(90deg, #4f8cff, #9f6bff);
+  --mi-accent: #6366f1;
+  --mi-accent-2: #a855f7;
+  --mi-grad: linear-gradient(90deg, #6366f1, #a855f7);
   --mi-hero-bg: linear-gradient(180deg, #0e1524 0%, #182338 100%);
   --mi-hero-bg-rev: linear-gradient(180deg, #182338 0%, #0e1524 100%);
   --mi-dark-surface: #0e1524;

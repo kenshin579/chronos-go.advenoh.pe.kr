@@ -5,8 +5,8 @@
       <stop offset="100%" stop-color="#182338"/>
     </linearGradient>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#f43f5e"/>
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
     </linearGradient>
   </defs>
 
@@ -21,22 +21,19 @@
   <!-- top accent bar -->
   <rect x="0" y="0" width="1200" height="6" fill="url(#accent)"/>
 
-  <!-- clock/queue mark -->
+  <!-- stopwatch mark -->
   <g transform="translate(96,205)">
-    <circle cx="60" cy="60" r="58" fill="none" stroke="#10b981" stroke-width="6"/>
-    <path d="M60 24 V60 L86 78" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="60" cy="60" r="4" fill="#10b981"/>
-  </g>
-
-  <g transform="translate(96,340)" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="22" fill="#8a96ad">
-    <rect x="0" y="0" width="14" height="14" rx="3" fill="#f43f5e"/>
-    <rect x="24" y="0" width="14" height="14" rx="3" fill="#f43f5e" opacity="0.6"/>
-    <rect x="48" y="0" width="14" height="14" rx="3" fill="#f43f5e" opacity="0.3"/>
+    <rect x="46" y="-14" width="28" height="12" rx="4" fill="#c7d2fe"/>
+    <line x1="60" y1="-2" x2="60" y2="12" stroke="#c7d2fe" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="60" cy="60" r="58" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <line x1="60" y1="60" x2="60" y2="20" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+    <line x1="60" y1="60" x2="90" y2="78" stroke="#c7d2fe" stroke-width="7" stroke-linecap="round" opacity="0.85"/>
+    <circle cx="60" cy="60" r="6" fill="#ffffff"/>
   </g>
 
   <text x="94" y="150" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="30" fill="#8a96ad" letter-spacing="2">GO</text>
 
-  <text x="94" y="470" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="86" font-weight="700" fill="#ffffff">chronos<tspan fill="#10b981">-go</tspan></text>
+  <text x="94" y="470" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="86" font-weight="700" fill="#ffffff">chronos<tspan fill="#818cf8">-go</tspan></text>
 
   <text x="96" y="530" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="30" fill="#c3cad9">Redis-backed distributed task queue &amp; scheduler for Go</text>
 

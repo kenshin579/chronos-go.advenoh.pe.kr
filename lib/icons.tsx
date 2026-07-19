@@ -16,8 +16,13 @@ type IconName =
 const paths: Record<IconName, React.ReactNode> = {
   logo: (
     <>
-      <rect x="2" y="2" width="20" height="20" rx="5" fill="url(#mi-logo-grad)" stroke="none" />
-      <path d="M6 15.5 9.5 10l3 4 2.5-5 3 6.5" stroke="#fff" strokeWidth="1.8" fill="none" />
+      <rect x="2" y="2" width="20" height="20" rx="5" fill="url(#chronos-logo-grad)" stroke="none" />
+      <rect x="10.3" y="3.4" width="3.4" height="1.6" rx="0.7" fill="#fff" stroke="none" />
+      <line x1="12" y1="5" x2="12" y2="6.4" stroke="#fff" strokeWidth="1.4" strokeLinecap="round" />
+      <circle cx="12" cy="13.2" r="5.4" fill="none" stroke="#fff" strokeWidth="1.7" />
+      <line x1="12" y1="13.2" x2="12" y2="9.7" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="12" y1="13.2" x2="14.7" y2="14.6" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" opacity="0.75" />
+      <circle cx="12" cy="13.2" r="1" fill="#fff" stroke="none" />
     </>
   ),
   github: (
@@ -56,9 +61,9 @@ export function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
     >
       {name === 'logo' && (
         <defs>
-          <linearGradient id="mi-logo-grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#4f8cff" />
-            <stop offset="1" stopColor="#9f6bff" />
+          <linearGradient id="chronos-logo-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#6366f1" />
+            <stop offset="1" stopColor="#a855f7" />
           </linearGradient>
         </defs>
       )}
