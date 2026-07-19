@@ -1,0 +1,38 @@
+:root {
+  /* light theme */
+  --mi-bg: #ffffff;
+  --mi-bg-alt: #f6f8fc;
+  --mi-text: #1a2233;
+  --mi-text-dim: #66708a;
+  --mi-border: #e5e9f0;
+  --mi-card: #ffffff;
+  --mi-code-bg: #f1f4f9;
+
+  /* brand (테마 무관) */
+  --mi-accent: #4f8cff;
+  --mi-accent-2: #9f6bff;
+  --mi-grad: linear-gradient(90deg, #4f8cff, #9f6bff);
+  --mi-hero-bg: linear-gradient(180deg, #0e1524 0%, #182338 100%);
+  --mi-hero-bg-rev: linear-gradient(180deg, #182338 0%, #0e1524 100%);
+  --mi-dark-surface: #0e1524;
+  --mi-hero-text: #ffffff;
+  --mi-hero-dim: #8a96ad;
+  --mi-hero-border: rgba(255, 255, 255, 0.14);
+  --mi-hero-glass: rgba(255, 255, 255, 0.07);
+
+  --mi-radius: 10px;
+  --mi-radius-lg: 14px;
+  --mi-font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  --mi-shadow: 0 8px 30px rgba(20, 40, 90, 0.08);
+}
+
+[data-theme='dark'] {
+  --mi-bg: #0c1017;
+  --mi-bg-alt: #11161f;
+  --mi-text: #dde3ee;
+  --mi-text-dim: #8b94a7;
+  --mi-border: #1d2430;
+  --mi-card: #11161f;
+  --mi-code-bg: #171e2a;
+  --mi-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
