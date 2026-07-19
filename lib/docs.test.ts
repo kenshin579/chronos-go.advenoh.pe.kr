@@ -17,9 +17,21 @@ describe('listDocFiles', () => {
     expect(en[0]).toBe('01-getting-started.md');
   });
 
-  // Plan B enables this once all 13 docs exist.
-  it.skip('has all 13 docs', () => {
+  it('has all 13 docs', () => {
     expect(listDocFiles('en')).toHaveLength(13);
+    expect(listDocFiles('ko')).toHaveLength(13);
+  });
+
+  it('renders every expected slug', async () => {
+    const slugs = (await loadDocs('en')).map((s) => s.slug).sort();
+    expect(slugs).toEqual(
+      [
+        'chains', 'enqueue-options', 'getting-started', 'groups',
+        'how-it-works', 'migrating-from-asynq', 'observability',
+        'performance', 'queues-and-priority', 'redis-cluster',
+        'retries-and-reliability', 'scheduling', 'tasks-and-handlers',
+      ].sort(),
+    );
   });
 });
 
