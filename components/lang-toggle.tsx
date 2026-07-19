@@ -11,7 +11,7 @@ export function LangToggle() {
     const rest = isKo ? pathname.replace(/^\/ko/, '') || '/' : pathname;
     const path = to === 'ko' ? `/ko${rest === '/' ? '/' : rest}` : rest;
     if (typeof window !== 'undefined') {
-      localStorage.setItem('mi-lang', to);
+      localStorage.setItem('chronos-lang', to);
     }
     router.push(path);
   }
