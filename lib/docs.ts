@@ -5,7 +5,7 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
-import rehypeHighlight from 'rehype-highlight';
+import rehypeShiki from '@shikijs/rehype';
 import rehypeStringify from 'rehype-stringify';
 
 export type DocLang = 'en' | 'ko';
@@ -121,7 +121,7 @@ async function renderMarkdown(content: string): Promise<string> {
       .use(remarkShiftHeadings)
       .use(remarkGfm)
       .use(remarkRehype)
-      .use(rehypeHighlight, { detect: false, ignoreMissing: true })
+      .use(rehypeShiki, { theme: 'one-dark-pro' })
       .use(rehypeStringify)
       .process(content),
   );

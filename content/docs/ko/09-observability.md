@@ -59,7 +59,7 @@ for _, q := range queues {
 
 CLI는 터미널을 위해 Inspector를 감싸는 도구입니다.
 
-```
+```bash
 chronos [--redis addr] [--db n] queue ls                       # standalone (default)
 chronos --cluster --redis n1:7000,n2:7001 queue ls             # Redis Cluster
 chronos [flags] queue pause  <queue>                            # stop consumption (~1s); unknown names are accepted and stay paused until resume

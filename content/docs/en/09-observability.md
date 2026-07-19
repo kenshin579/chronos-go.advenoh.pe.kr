@@ -58,7 +58,7 @@ consumption.
 
 The CLI wraps the Inspector for the terminal:
 
-```
+```bash
 chronos [--redis addr] [--db n] queue ls                       # standalone (default)
 chronos --cluster --redis n1:7000,n2:7001 queue ls             # Redis Cluster
 chronos [flags] queue pause  <queue>                            # stop consumption (~1s); unknown names are accepted and stay paused until resume
