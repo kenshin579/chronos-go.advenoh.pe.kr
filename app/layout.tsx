@@ -22,7 +22,8 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
-  icons: { icon: '/favicon.svg' },
+  icons: { icon: '/favicon.svg', apple: '/apple-touch-icon.png' },
+  manifest: '/site.webmanifest',
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -47,6 +48,8 @@ export const metadata: Metadata = {
     },
   },
 };
+
+export const viewport = { themeColor: '#6366f1' };
 
 const jsonLdWebsite = {
   '@context': 'https://schema.org',

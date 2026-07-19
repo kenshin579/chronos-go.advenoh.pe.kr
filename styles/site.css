@@ -636,6 +636,7 @@ body {
   line-height: 1.6;
   border-radius: 10px;
 }
+.mi-prose pre:has(code.hljs) { background: transparent; border: none; padding: 0; }
 .hljs-comment, .hljs-quote { color: #7c8aa5; font-style: italic; }
 .hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-name { color: #a5b4fc; }
 .hljs-string, .hljs-attr, .hljs-symbol, .hljs-meta-string { color: #7ee7c7; }
