@@ -1,57 +1,73 @@
 import { describe, it, expect } from 'vitest';
-import { listDocFiles, assertLangParity, loadDocs } from './docs';
+import {
+  GROUPS,
+  assertLangParity,
+  listSlugs,
+  readAllMeta,
+  getDocsNav,
+  loadDoc,
+} from './docs';
 
-describe('assertLangParity', () => {
-  it('passes when en and ko file sets match', () => {
+const EXPECTED_SLUGS = [
+  'getting-started', 'tasks-and-handlers', 'enqueue-options', 'queues-and-priority',
+  'retries-and-reliability', 'scheduling', 'chains', 'groups', 'observability',
+  'redis-cluster', 'performance', 'how-it-works', 'migrating-from-asynq',
+];
+
+describe('parity & slugs', () => {
+  it('en and ko file sets match', () => {
     expect(() => assertLangParity()).not.toThrow();
   });
-});
-
-describe('listDocFiles', () => {
-  it('returns md files sorted, identical set across langs', () => {
-    const en = listDocFiles('en');
-    const ko = listDocFiles('ko');
-    expect(en.length).toBeGreaterThan(0);
-    expect(en).toEqual([...en].sort());
-    expect(ko).toEqual(en);
-    expect(en[0]).toBe('01-getting-started.md');
-  });
-
-  it('has all 13 docs', () => {
-    expect(listDocFiles('en')).toHaveLength(13);
-    expect(listDocFiles('ko')).toHaveLength(13);
-  });
-
-  it('renders every expected slug', async () => {
-    const slugs = (await loadDocs('en')).map((s) => s.slug).sort();
-    expect(slugs).toEqual(
-      [
-        'chains', 'enqueue-options', 'getting-started', 'groups',
-        'how-it-works', 'migrating-from-asynq', 'observability',
-        'performance', 'queues-and-priority', 'redis-cluster',
-        'retries-and-reliability', 'scheduling', 'tasks-and-handlers',
-      ].sort(),
-    );
+  it('has all 13 slugs in both languages', () => {
+    expect([...listSlugs('en')].sort()).toEqual([...EXPECTED_SLUGS].sort());
+    expect([...listSlugs('ko')].sort()).toEqual([...EXPECTED_SLUGS].sort());
   });
 });
 
-describe('loadDocs', () => {
-  it('parses frontmatter and renders markdown to html', async () => {
-    const sections = await loadDocs('en');
-    const gettingStarted = sections.find((s) => s.slug === 'getting-started');
-    expect(gettingStarted).toBeDefined();
-    expect(gettingStarted!.title).toBeTruthy();
-    expect(gettingStarted!.html).toContain('<');
-  });
-
-  it('every section has non-empty slug, title and html', async () => {
+describe('metadata', () => {
+  it('every doc has an allowed group and a non-empty description, both langs', () => {
     for (const lang of ['en', 'ko'] as const) {
-      const sections = await loadDocs(lang);
-      for (const s of sections) {
-        expect(s.slug).toBeTruthy();
-        expect(s.title).toBeTruthy();
-        expect(s.html.length).toBeGreaterThan(20);
+      for (const m of readAllMeta(lang)) {
+        expect(GROUPS).toContain(m.group);
+        expect(m.description.length).toBeGreaterThan(0);
+        expect(m.title.length).toBeGreaterThan(0);
       }
     }
+  });
+});
+
+describe('getDocsNav', () => {
+  it('returns the 5 groups in GROUPS order with all 13 docs', () => {
+    const nav = getDocsNav('en');
+    expect(nav.map((g) => g.group)).toEqual([...GROUPS]);
+    expect(nav.reduce((n, g) => n + g.items.length, 0)).toBe(13);
+    // items within a group are ordered by filename order
+    for (const g of nav) {
+      const orders = g.items.map((i) => i.order);
+      expect(orders).toEqual([...orders].sort((a, b) => a - b));
+    }
+  });
+});
+
+describe('loadDoc', () => {
+  it('first doc has no prev, next = tasks-and-handlers', async () => {
+    const d = await loadDoc('en', 'getting-started');
+    expect(d.prev).toBeNull();
+    expect(d.next?.slug).toBe('tasks-and-handlers');
+    expect(d.html).toContain('<');
+  });
+  it('last doc has no next, prev = how-it-works', async () => {
+    const d = await loadDoc('en', 'migrating-from-asynq');
+    expect(d.next).toBeNull();
+    expect(d.prev?.slug).toBe('how-it-works');
+  });
+  it('applies syntax highlighting (hljs classes) to code blocks', async () => {
+    const d = await loadDoc('en', 'getting-started');
+    expect(d.html).toContain('hljs');
+  });
+  it('renders ko as well', async () => {
+    const d = await loadDoc('ko', 'scheduling');
+    expect(d.title.length).toBeGreaterThan(0);
+    expect(d.html.length).toBeGreaterThan(50);
   });
 });
