@@ -649,6 +649,7 @@ body {
 @media (max-width: 700px) { .mi-search-btn-label, .mi-search-kbd { display: none; } }
 
 .mi-search-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: flex-start; justify-content: center; padding: 10vh 16px 16px; z-index: 200; }
+.mi-search-overlay[hidden] { display: none; }
 .mi-search-modal { width: 100%; max-width: 640px; max-height: 70vh; overflow: auto; background: var(--mi-bg); border: 1px solid var(--mi-border); border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
 .mi-search-pagefind { padding: 12px; }
 .mi-search-note { padding: 20px; text-align: center; opacity: 0.7; }

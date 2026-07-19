@@ -9,10 +9,15 @@ declare global {
   }
 }
 
+// module-level: once the script has failed to load, don't get stuck on 'loading' on reopen
+let scriptFailed = false;
+
 export function Search({ t }: { t: Dict }) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
   const containerRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const mountedRef = useRef(false);
 
   const close = useCallback(() => setOpen(false), []);
@@ -31,17 +36,19 @@ export function Search({ t }: { t: Dict }) {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // lock body scroll while open
+  // lock body scroll while open; restore focus to the trigger on close
   useEffect(() => {
     if (!open) return;
-    const prev = document.body.style.overflow;
+    const trigger = buttonRef.current;
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = prev;
+      document.body.style.overflow = prevOverflow;
+      trigger?.focus();
     };
   }, [open]);
 
-  // lazy-load + mount Pagefind UI on first open
+  // lazy-load + mount Pagefind UI on first open (container is always rendered → stable ref)
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
@@ -77,6 +84,12 @@ export function Search({ t }: { t: Dict }) {
         cancelled = true;
       };
     }
+    if (scriptFailed) {
+      setStatus('error');
+      return () => {
+        cancelled = true;
+      };
+    }
 
     setStatus('loading');
     let script = document.querySelector<HTMLScriptElement>('script[data-pagefind-ui]');
@@ -94,6 +107,7 @@ export function Search({ t }: { t: Dict }) {
     }
     const onLoad = () => mount();
     const onError = () => {
+      scriptFailed = true;
       if (!cancelled) setStatus('error');
     };
     script.addEventListener('load', onLoad);
@@ -106,9 +120,28 @@ export function Search({ t }: { t: Dict }) {
     };
   }, [open, t]);
 
+  // focus trap: keep Tab within the modal
+  const onModalKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Tab' || !modalRef.current) return;
+    const focusables = modalRef.current.querySelectorAll<HTMLElement>(
+      'a[href], button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
   return (
     <>
       <button
+        ref={buttonRef}
         type="button"
         className="mi-icon-btn mi-search-btn"
         aria-label={t.search.label}
@@ -132,20 +165,20 @@ export function Search({ t }: { t: Dict }) {
         <kbd className="mi-search-kbd">{t.search.shortcut}</kbd>
       </button>
 
-      {open && (
-        <div className="mi-search-overlay" onClick={close}>
-          <div
-            className="mi-search-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-label={t.search.label}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div ref={containerRef} className="mi-search-pagefind" />
-            {status === 'error' && <p className="mi-search-note">{t.search.unavailable}</p>}
-          </div>
+      <div className="mi-search-overlay" hidden={!open} onClick={close}>
+        <div
+          ref={modalRef}
+          className="mi-search-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t.search.label}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={onModalKeyDown}
+        >
+          <div ref={containerRef} className="mi-search-pagefind" />
+          {status === 'error' && <p className="mi-search-note">{t.search.unavailable}</p>}
         </div>
-      )}
+      </div>
     </>
   );
 }
