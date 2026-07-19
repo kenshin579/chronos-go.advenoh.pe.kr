@@ -25,6 +25,21 @@ export type DocArticle = DocMeta & { html: string; prev: DocMeta | null; next: D
 
 const CONTENT_ROOT = path.join(process.cwd(), 'content', 'docs');
 
+/** content가 `### `부터 시작해 h1(제목) 다음 h3가 되는 skip을 막기 위해 heading depth를 한 단계씩 올린다(h2 하한). */
+function remarkShiftHeadings() {
+  return (tree: any) => {
+    const walk = (node: { type?: string; depth?: number; children?: unknown[] }) => {
+      if (node.type === 'heading' && typeof node.depth === 'number') {
+        node.depth = Math.max(2, node.depth - 1);
+      }
+      if (Array.isArray(node.children)) {
+        for (const c of node.children) walk(c as typeof node);
+      }
+    };
+    walk(tree);
+  };
+}
+
 export function listDocFiles(lang: DocLang): string[] {
   return fs
     .readdirSync(path.join(CONTENT_ROOT, lang))
@@ -103,6 +118,7 @@ async function renderMarkdown(content: string): Promise<string> {
   return String(
     await unified()
       .use(remarkParse)
+      .use(remarkShiftHeadings)
       .use(remarkGfm)
       .use(remarkRehype)
       .use(rehypeHighlight, { detect: false, ignoreMissing: true })

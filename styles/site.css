@@ -514,17 +514,6 @@ body {
   letter-spacing: -0.02em;
   margin-bottom: 40px;
 }
-.mi-doc-section {
-  margin-bottom: 56px;
-  scroll-margin-top: 24px;
-}
-.mi-doc-section > h2 {
-  font-size: 24px;
-  font-weight: 800;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--mi-border);
-  margin-bottom: 18px;
-}
 .mi-prose {
   font-size: 15.5px;
   line-height: 1.75;
@@ -651,7 +640,10 @@ body {
 
 .mi-docs-nav-group { margin-bottom: 1.1rem; }
 .mi-docs-nav .is-active { font-weight: 600; color: var(--mi-accent); }
+.mi-docs-toc a.is-active { border-left-color: var(--mi-accent); }
 .mi-docs-prevnext { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(127,127,127,0.2); }
 .mi-docs-prevnext a { text-decoration: none; }
 .mi-docs-index ul { list-style: none; padding-left: 0; }
 .mi-docs-index li { margin: 0.35rem 0; }
+.mi-docs-index h2 { font-size: 18px; font-weight: 800; margin: 1.6rem 0 0.6rem; }
+.mi-docs-index section:first-child h2 { margin-top: 0; }
