@@ -9,7 +9,7 @@ export function SchedulerDiagram() {
               className={
                 'rounded-md px-3 py-2 text-center border ' +
                 (n.includes('★')
-                  ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 font-semibold'
+                  ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 font-semibold'
                   : 'border-black/15 dark:border-white/15 text-foreground/70')
               }
             >
@@ -18,7 +18,7 @@ export function SchedulerDiagram() {
           ))}
         </div>
         <div className="text-foreground/40 text-2xl">&rarr;</div>
-        <div className="rounded-lg bg-rose-500 text-white px-4 py-6 text-center font-medium">
+        <div className="rounded-lg bg-purple-500 text-white px-4 py-6 text-center font-medium">
           Redis
           <br />
           leader lock

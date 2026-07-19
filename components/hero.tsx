@@ -13,7 +13,7 @@ export function Hero({ t, lang }: { t: Dict; lang: 'en' | 'ko' }) {
         </span>
         <h1 className="mt-4 text-4xl md:text-5xl font-bold leading-tight">
           {t.hero.title1}{' '}
-          <span className="text-emerald-600 dark:text-emerald-400">{t.hero.title2}</span>
+          <span className="text-indigo-600 dark:text-indigo-400">{t.hero.title2}</span>
         </h1>
         <p className="mt-4 text-lg text-foreground/70">{t.hero.lead}</p>
         <div className="mt-6 flex gap-3">
