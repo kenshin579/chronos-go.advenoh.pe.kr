@@ -52,4 +52,11 @@ export const ko: Dict = {
   },
   docs: { title: '문서', toc: '이 페이지 목차' },
   footer: { tagline: 'Go를 위한 Redis 기반 태스크 큐·스케줄러.', builtBy: 'Built by' },
+  search: {
+    label: '검색',
+    placeholder: '문서 검색…',
+    empty: '결과 없음',
+    unavailable: '검색은 빌드 후 사용할 수 있어요.',
+    shortcut: '⌘K',
+  },
 };

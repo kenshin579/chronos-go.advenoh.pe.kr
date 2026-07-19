@@ -60,6 +60,13 @@ export const en = {
   },
   docs: { title: 'Documentation', toc: 'On this page' },
   footer: { tagline: 'Redis-backed task queue & scheduler for Go.', builtBy: 'Built by' },
+  search: {
+    label: 'Search',
+    placeholder: 'Search the docs…',
+    empty: 'No results',
+    unavailable: 'Search is available after build.',
+    shortcut: '⌘K',
+  },
 };
 
 export type Dict = typeof en;
