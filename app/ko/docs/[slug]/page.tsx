@@ -34,7 +34,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     <>
       <Nav t={ko} lang="ko" />
       <DocsShell nav={nav} lang="ko" currentSlug={slug} tocLabel={ko.docs.toc}>
-        <article className="mi-prose">
+        <article className="mi-prose" data-pagefind-body>
           <h1>{doc.title}</h1>
           <div dangerouslySetInnerHTML={{ __html: doc.html }} />
         </article>

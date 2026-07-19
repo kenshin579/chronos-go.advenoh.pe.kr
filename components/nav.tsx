@@ -4,6 +4,7 @@ import { LangToggle } from './lang-toggle';
 import { Icon } from '@/lib/icons';
 import { siteConfig } from '@/lib/site-config';
 import type { Dict } from '@/lib/i18n/types';
+import { Search } from './search';
 
 export function Nav({ t, lang }: { t: Dict; lang: 'en' | 'ko' }) {
   const home = lang === 'ko' ? '/ko/' : '/';
@@ -26,6 +27,7 @@ export function Nav({ t, lang }: { t: Dict; lang: 'en' | 'ko' }) {
           </a>
         </nav>
         <div className="mi-nav-actions">
+          <Search t={t} />
           <a
             className="mi-icon-btn"
             href={siteConfig.github}
