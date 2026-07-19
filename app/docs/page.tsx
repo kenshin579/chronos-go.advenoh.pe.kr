@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
-import { loadDocs } from '@/lib/docs';
+import Link from 'next/link';
+import { getDocsNav } from '@/lib/docs';
 import { en } from '@/lib/i18n/en';
 import { Nav } from '@/components/nav';
 import { Footer } from '@/components/footer';
-import { DocsLayout } from '@/components/docs/docs-layout';
+import { DocsShell } from '@/components/docs/docs-layout';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
@@ -15,12 +16,28 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Page() {
-  const sections = await loadDocs('en');
+export default function Page() {
+  const nav = getDocsNav('en');
   return (
     <>
       <Nav t={en} lang="en" />
-      <DocsLayout sections={sections} title={en.docs.title} tocTitle={en.docs.toc} />
+      <DocsShell nav={nav} lang="en" tocLabel={en.docs.toc}>
+        <div className="mi-prose mi-docs-index">
+          <h1>{en.docs.title}</h1>
+          {nav.map((g) => (
+            <section key={g.group}>
+              <h2>{g.group}</h2>
+              <ul>
+                {g.items.map((it) => (
+                  <li key={it.slug}>
+                    <Link href={`/docs/${it.slug}/`}>{it.title}</Link> — {it.description}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </DocsShell>
       <Footer t={en} />
     </>
   );

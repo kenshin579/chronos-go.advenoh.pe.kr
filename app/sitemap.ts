@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { siteConfig } from '@/lib/site-config';
+import { listSlugs } from '@/lib/docs';
 
 export const dynamic = 'force-static';
 
@@ -17,6 +18,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ko: `${siteConfig.url}/ko/docs/`,
     },
   };
+  const articleEntries: MetadataRoute.Sitemap = listSlugs('en').flatMap((slug) => {
+    const articleAlternates = {
+      languages: {
+        en: `${siteConfig.url}/docs/${slug}/`,
+        ko: `${siteConfig.url}/ko/docs/${slug}/`,
+      },
+    };
+    return [
+      {
+        url: `${siteConfig.url}/docs/${slug}/`,
+        lastModified: now,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+        alternates: articleAlternates,
+      },
+      {
+        url: `${siteConfig.url}/ko/docs/${slug}/`,
+        lastModified: now,
+        changeFrequency: 'monthly',
+        priority: 0.6,
+        alternates: articleAlternates,
+      },
+    ];
+  });
   return [
     {
       url: `${siteConfig.url}/`,
@@ -46,5 +71,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
       alternates: docsAlternates,
     },
+    ...articleEntries,
   ];
 }
